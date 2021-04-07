@@ -15,7 +15,7 @@ root build.gradle
 dependency
 ```
 	dependencies {
-	        compile 'com.github.piaofirst:ProgressView:v1.0'
+	        implementation 'com.github.piaofirst:ProgressView:v1.0.1'
 	}
 
 ```
