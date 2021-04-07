@@ -2,23 +2,32 @@ package com.piaofirst.progressview
 
 import android.graphics.Color
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
+import com.piaofirst.progressview.databinding.ActivityMainBinding
 import com.piaofirst.progressviewlibrary.ProgressView
-import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
-        progressView.color = Color.RED
-        progressView.borderWidth = 3f;
-        progressView.radius = 15f
-        progressView.textSize = 30f
+        binding.progressView.color = Color.RED
+        binding.progressView.borderWidth = 3f;
+        binding.progressView.radius = 15f
+        binding.progressView.textSize = 30f
 
-        progressView.onStart = {
+        binding.progressView.onStart = {
             startLoadingThread()
+        }
+        binding.progressView.onPause = {
+            loadingThread?.state = ProgressView.ProgressState.Paused
+        }
+        binding.progressView.onResume = {
+            loadingThread?.state = ProgressView.ProgressState.Loading
         }
     }
 
@@ -27,9 +36,9 @@ class MainActivity : AppCompatActivity() {
     private fun startLoadingThread() {
         loadingThread = LoadingThread()
         loadingThread?.onProgress = {
-            progressView.progress = it
+            binding.progressView.progress = it
             if (it >= 1) {
-                progressView.state = ProgressView.ProgressState.Finished
+                binding.progressView.state = ProgressView.ProgressState.Finished
             }
         }
         loadingThread?.start()
@@ -52,7 +61,7 @@ class MainActivity : AppCompatActivity() {
                         onProgress?.invoke(Math.min(progress, 1f))
                     }
                 }
-                Thread.sleep(100)
+                sleep(100)
             }
         }
     }
